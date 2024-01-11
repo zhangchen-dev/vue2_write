@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app" style="color: red; font-size: 20px">
+      {{msg}}
+      <h2>张三</h2>
+      <span>{{list}}</span>
+    </div>
+    <script src="dist/Vue.js"></script>
+    <script>
+      // 通过注册全局的函数 Mixin 注册生命周期
+      Vue.Mixin({
+        created: function a() {},
+      });
+      Vue.Mixin({
+        created: function b() {},
+      });
+
+      // 响应式 vue
+      let vm = new Vue({
+        el: "#app",
+        // data存在两种形式 对象/函数
+        data() {
+          return {
+            msg: "你好",
+           
+            list: [1, 2, 3],
+            objarr: [{ a: "aaaa" }],
+          };
+        },
+
+        created() {
+          console.log("created生命周期触发");
+        },
+        updated(){
+          console.log('%c 🌷🌷🌷🌷[  ]-43', 'font-size:13px; background:#99ca74; color:#ddffb8;', 'updated')
+        }
+      });
+      // 模板编译方式 三种编译方式
+      // template render el
+      // console.log(vm);
+
+      // dep-watcher引入
+      setTimeout(() => {
+        vm.msg = "我不太好";
+        // 真实的更新dom渲染上去的方法 实现自动更新  思路： 1.数据变换后自动更新视图 2.以组件为单位更新=》自动触发更新 给每个组件添加watcher， 属性变化后调用这个watcher
+        //  vm._updata(vm._render())
+      }, 1000);
+      //  实现对象的收集依赖
+
+      // 数组收集
+      // 思路
+      // 1.0 给所有的对象类型增加一个dep []
+      // 2.0 获取数组的值，会调用get方法 我们希望当前的数字记住当前的watcher 1. 当前的dep 2.数组取值时让dep添加watcher
+      // 3.0 更新数组时候 push pop等，找到watcher 更新
+      setTimeout(() => {
+        vm.list.push(4)
+      }, 1000); 
+      setTimeout(() => {
+        vm.list.splice(0,1,'111')
+      }, 1000);
+      setTimeout(() => {
+        vm.list.push('0000')
+      }, 1000);
+
+
+      // 三、由于每次更新都触发视图更新 所以找一个时间点 进行统一更新 防止多次影响性能 nextTick 
+      // 处理位置 再触发更新函数的位置修改 也就是 watcher的 updata
+      // 注意nextTick是用户可以使用的一个方法
+      // 用户自定义的nextTick
+      vm.$nextTick(()=>{
+        console.log('%c 🌷🌷🌷🌷[  ]-75', 'font-size:13px; background:#db10ed; color:#ff54ff;', vm.$el.innerHTML)
+      })
+    </script>
+  </body>
+</html>

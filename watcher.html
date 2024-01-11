@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">{{a}}</div>
+    <script src="./dist/Vue.js"></script>
+    <script>
+      // 注意点 vue2的watch的写法
+      // 响应式 vue
+      let vm = new Vue({
+        el: "#app",
+        // data存在两种形式 对象/函数
+        data() {
+          return {
+            a: "1",
+            b: { bb: { bbb: "bbbBVal" } },
+          };
+        },
+        methods: {
+          aa() {
+            console.log(a);
+          },
+        },
+        watch: {
+          // 第一种调用形式
+           'b.bb.bbb'(newVal, oldVal) {
+            console.log('%c 🌷🌷🌷🌷[ newVal, oldVal ]-31', 'font-size:13px; background:#5e4576; color:#a289ba;', newVal, oldVal)
+           },
+           immediate:true,
+          // // 第二种调用形式
+          // a: [
+          //   (newVal, oldVal) => {
+          //     console.log(1, newVal);
+          //   },
+          //   (newVal, oldVal) => {
+          //     console.log(3, newVal);
+          //   },
+          //   (newVal, oldVal) => {
+          //     console.log(3, newVal);
+          //   },
+          // ],
+          // // 第三种调用方式
+          // "b.b.bb": {
+          //   handler(newVal,oldVal) {
+          //       console.log('%c 🌷🌷🌷🌷[ newVal,oldVal ]-48', 'font-size:13px; background:#4002a2; color:#8446e6;', newVal,oldVal)
+          //   },
+          //   immediate: true,
+          // },
+          // deep: true,
+          // 第四种调用方式
+          // a: "aa",
+        },
+      });
+      vm.a = "hello";
+      vm.b.bb.bbb = 'hahah'
+    </script>
+  </body>
+</html>
