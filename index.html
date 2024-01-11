@@ -7,9 +7,6 @@
   </head>
   <body>
     <div id="app" style="color: red; font-size: 20px">
-      {{msg}}
-      <h2>张三</h2>
-      <span>{{list}}</span>
     </div>
     <script src="dist/Vue.js"></script>
     <script>
@@ -76,6 +73,11 @@
       vm.$nextTick(()=>{
         console.log('%c 🌷🌷🌷🌷[  ]-75', 'font-size:13px; background:#db10ed; color:#ff54ff;', vm.$el.innerHTML)
       })
+
+
+      // diff 算法实现  vue diff算法 最小量更新（对比） old new vnode
+      // 1.0实现 创建两个vnode
+      // 2.0 对比： 在数据更新的时候，拿到老的节点和新的节点进行对比 将不同的地方进行更新
     </script>
   </body>
 </html>

@@ -75,6 +75,6 @@ function gen(node) {
 export function generate(el) {
   // 注意属性 ｛style="fontSize:12px;color:red"｝这类属性需要变成对象 他在ast中是放在一个属性对象中了
   let children = genChildren(el);
-  let code = `_c("${el.tag}",${el.attrs.length ? `${geneProps(el.attrs)}` : "undefined"},${children ? `${children}` : "undefined"})`;
-  return code
+  let code = `_c("${el.tag}",${el.attrs.length ? `${geneProps(el.attrs)}` : undefined},${children ? `${children}` : undefined})`;
+  return code;
 }

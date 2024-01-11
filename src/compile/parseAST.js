@@ -17,58 +17,57 @@ const conditionalComment = /^<!\[/;
  * <div id="app">hello {{msg}}<h></h></div> 开始标签 结束标签 文本
  */
 
-// 遍历
-// 创建抽象语法树
-function createASTElement(tag,attrs){
-    return {
-        tag,
-        attrs,
-        children:[],
-        type:1,
-        parent:null,
-    }
-}
-
-let root;
-let createParent // 当前元素的父级
-let stack = [] // 使用栈的数据结构
-// 开始标签
-function start(tag, attrs) {
-  let element = createASTElement(tag,attrs);
-  if(!root){
-    root = element
-  }
-  createParent = element
-  stack.push(element)
-}
-// 文本标签
-function charts(text) {
-  // 空格
-  text = text.replace(/\s/g,'')
-  if(text){
-    createParent.children.push({
-        type:3,
-        text,
-    })
-  }
-}
-// 结束标签
-function end(tag) {
-  // 结束的标签
-  let element = stack.pop()
-  createParent = stack[stack.length-1]
-  if(createParent){ // 元素的闭合
-    element.parent = createParent.tag
-    createParent.children.push(element)
-  }
-}
-
 export function parseHTML(html) {
+  // 遍历
+  // 创建抽象语法树
+  function createASTElement(tag, attrs) {
+    return {
+      tag,
+      attrs,
+      children: [],
+      type: 1,
+      parent: null,
+    };
+  }
+
+  let root;
+  let createParent; // 当前元素的父级
+  let stack = []; // 使用栈的数据结构
+  // 开始标签
+  function start(tag, attrs) {
+    let element = createASTElement(tag, attrs);
+    if (!root) {
+      root = element;
+    }
+    createParent = element;
+    stack.push(element);
+  }
+  // 文本标签
+  function charts(text) {
+    // 空格
+    text = text.replace(/\s/g, "");
+    if (text) {
+      createParent.children.push({
+        type: 3,
+        text,
+      });
+    }
+  }
+  // 结束标签
+  function end(tag) {
+    // 结束的标签
+    let element = stack.pop();
+    createParent = stack[stack.length - 1];
+    if (createParent) {
+      // 元素的闭合
+      element.parent = createParent.tag;
+      createParent.children.push(element);
+    }
+  }
   while (html) {
     // 判断标签 <>
     let textEnd = html.indexOf("<");
     if (textEnd === 0) {
-
       // 1. 开始标签
       const startTagMatch = parseStartTag(); // 开始标签的内容
       if (startTagMatch) {
@@ -128,5 +127,5 @@ export function parseHTML(html) {
     html = html.substring(n);
   }
 
-  return root
+  return root;
 }
