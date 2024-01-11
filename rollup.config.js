@@ -17,8 +17,8 @@ export default {
         serve({
             port:3000,
             contentBase:'', // 空字符串 标识当前目录
-            // openPage:'/index.html'
-            openPage:'/watcher.html'
+            openPage:'/index.html'
+            // openPage:'/watcher.html'
         })
     ]
 }
