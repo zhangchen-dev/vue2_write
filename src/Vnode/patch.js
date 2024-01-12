@@ -115,8 +115,21 @@ function updataChild(oldChildren, newChildren, parent) {
   let newEndIndex = newChildren.length - 1;
   let newEndVnode = newChildren[newEndIndex];
 
+  // 创建映射表
+  let map = function makeIndexBykey(child) {
+    let _map = {};
+    child.forEach((item, index) => {
+      // 注意没有key
+      if (item.key) {
+        map[item.key] = index;
+      }
+    });
+    return _map;
+  };
+
   // 判断是同一个元素否
   function isSameVnode(_old, _new) {
+    console.log(undefined === undefined); // true
     return _old.tag === _new.tag && _old.key === _new.key;
   }
 
@@ -133,11 +146,38 @@ function updataChild(oldChildren, newChildren, parent) {
       patch(oldEndVnode, newEndVnode);
       oldEndVnode = oldChildren[--oldEndIndex];
       newEndVnode = newChildren[--newEndIndex];
-    }else if(isSameVnode(oldStartVnode,newEndVnode)){
+    } else if (isSameVnode(oldStartVnode, newEndVnode)) {
+      // 交叉比较  ！！！交叉比较存在问题：元素插入顺序不对
+      patch(oldStartVnode, newEndVnode);
+      oldStartVnode = oldChildren[++oldStartIndex];
+      newEndVnode = newChildren[--newEndIndex];
+    } else if (isSameVnode(oldEndVnode, newStartVnode)) {
       // 交叉比较
-      patch(oldStartVnode,newEndVnode)
-      oldStartVnode = oldChildren[++oldStartIndex]
-      newEndVnode = newChildren[--newEndIndex]
+      patch(oldEndVnode, newStartVnode);
+      oldEndVnode = oldChildren[--oldEndIndex];
+      newStartVnode = newChildren[++newStartIndex];
+    }
+
+    // 面试地方： 为什么需要添加key 并且key不能是索引 ？？？
+    else {
+      // 上述都不行  暴力比对
+      // 1.0 创建旧元素的映射表
+      // 2.0 从旧的中寻找新的元素是否存在 依据新元素进行暴力比对
+      let moveIndex = map[newStartVnode.key];
+      if (moveIndex == undefined) {
+        // 不存在这个新值 直接添加
+        parent.insertBefore(createEl(newStartVnode), oldStartVnode.el);
+      } else {
+        // 存在 则说明旧的存在新的
+        let moveVnode = oldChildren[moveIndex]; // 获取到移动的元素
+        oldChildren[moveIndex] = null; // 防止数组塌陷
+        // 插入旧的过来
+        parent.insertBefore(moveVnode.el, oldStartVnode.el);
+        // 处理问题： 可能找到了 但只是这一层级的相同 其中存在的子级需要进行递归进入新的整个流程的比对中
+        patch(moveVnode, newStartVnode);
+      }
+      // 上述完成 指针位移
+      newStartVnode = newChildren[++newStartIndex];
     }
   }
 
@@ -149,5 +189,15 @@ function updataChild(oldChildren, newChildren, parent) {
       parent.appendChild(createEl(newChildren[i]));
     }
   }
-  console.log("%c 🌷🌷🌷🌷[ newStartIndex<=newEndIndex ]-140", "font-size:13px; background:#0d937a; color:#51d7be;", parent, newStartIndex, newEndIndex);
+
+  // 旧的多余删除
+  if (oldStartIndex <= oldEndIndex) {
+    for (let i = oldStartIndex; i <= oldEndIndex; i++) {
+      // 删除 注意上述变成的null的
+      let child = oldChildren[i];
+      if (child !== null) {
+        parent.removeChild(child.el);
+      }
+    }
+  }
 }

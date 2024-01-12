@@ -7,6 +7,8 @@
   </head>
   <body>
     <div id="app" style="color: red; font-size: 20px">
+      <h2>你好</h2>
+      <h3>{{name}}</h3>
     </div>
     <script src="dist/Vue.js"></script>
     <script>
@@ -25,7 +27,7 @@
         data() {
           return {
             msg: "你好",
-           
+            name: "张三",
             list: [1, 2, 3],
             objarr: [{ a: "aaaa" }],
           };
@@ -34,9 +36,9 @@
         created() {
           console.log("created生命周期触发");
         },
-        updated(){
-          console.log('%c 🌷🌷🌷🌷[  ]-43', 'font-size:13px; background:#99ca74; color:#ddffb8;', 'updated')
-        }
+        updated() {
+          console.log("%c 🌷🌷🌷🌷[  ]-43", "font-size:13px; background:#99ca74; color:#ddffb8;", "updated");
+        },
       });
       // 模板编译方式 三种编译方式
       // template render el
@@ -56,24 +58,22 @@
       // 2.0 获取数组的值，会调用get方法 我们希望当前的数字记住当前的watcher 1. 当前的dep 2.数组取值时让dep添加watcher
       // 3.0 更新数组时候 push pop等，找到watcher 更新
       setTimeout(() => {
-        vm.list.push(4)
-      }, 1000); 
-      setTimeout(() => {
-        vm.list.splice(0,1,'111')
+        vm.list.push(4);
       }, 1000);
       setTimeout(() => {
-        vm.list.push('0000')
+        vm.list.splice(0, 1, "111");
+      }, 1000);
+      setTimeout(() => {
+        vm.list.push("0000");
       }, 1000);
 
-
-      // 三、由于每次更新都触发视图更新 所以找一个时间点 进行统一更新 防止多次影响性能 nextTick 
+      // 三、由于每次更新都触发视图更新 所以找一个时间点 进行统一更新 防止多次影响性能 nextTick
       // 处理位置 再触发更新函数的位置修改 也就是 watcher的 updata
       // 注意nextTick是用户可以使用的一个方法
       // 用户自定义的nextTick
-      vm.$nextTick(()=>{
-        console.log('%c 🌷🌷🌷🌷[  ]-75', 'font-size:13px; background:#db10ed; color:#ff54ff;', vm.$el.innerHTML)
-      })
-
+      vm.$nextTick(() => {
+        console.log("%c 🌷🌷🌷🌷[  ]-75", "font-size:13px; background:#db10ed; color:#ff54ff;", vm.$el.innerHTML);
+      });
 
       // diff 算法实现  vue diff算法 最小量更新（对比） old new vnode
       // 1.0实现 创建两个vnode

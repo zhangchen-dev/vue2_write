@@ -30,7 +30,14 @@ export function lifecycleMixin(Vue) {
     // vnode => 真实的dom
     let vm = this;
     // 对比更新dom
-    vm.$el = patch(vm.$el, vnode);
+    // 需要区分是首次渲染还是更新
+    let prevVnode = vm._Vnode // 如果是首次渲染 值为null
+    if(!prevVnode){
+      vm.$el = patch(vm.$el, vnode);
+      vm._Vnode = vnode // 首次执行完成后赋值
+    }else{
+      patch(vm.$el,vnode)
+    }
   };
 }
 // 生命周期的调用
