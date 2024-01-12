@@ -15,6 +15,9 @@ export default class Watcher {
     this.deps = [];
     this.user = !!options.user;
     this.depsId = new Set(); // 去重dep
+    // computed
+    this.lazy = options.lazy; // 这个watcher上lazy为true说明是计算属性
+    this.dirty = this.lazy; // 标识用户是否执行这次的更行
     // 判断
     if (typeof exprOrfn === "function") {
       this.getter = exprOrfn; // 用来更新视图的方法
@@ -30,7 +33,7 @@ export default class Watcher {
       };
     }
     // 执行页面渲染的get 此处获取到的是旧的值
-    this.value = this.get(); // 保存监听的初始值 watch oldValue
+    this.value = this.lazy ? null : this.get(); // 保存监听的初始值 watch oldValue
     // 触发更新视图方法
     this.get();
   }
@@ -38,7 +41,7 @@ export default class Watcher {
   get() {
     // 添加watcher
     pushTarget(this);
-    const value = this.getter();
+    const value = this.getter.call(this.vm);
     // 更行后取消
     popTarget();
     return value;
@@ -49,7 +52,28 @@ export default class Watcher {
     // 思路：暂存
     // console.log("updata"); // 执行次数和set触发次数一致
     // this.getter();
-    queueWatcher(this);
+
+    // 注意点： 计算属性中的值不需要重新出发渲染 所以此处需要加以判断
+    if (this.lazy) {
+      // 计算属性的处理 这里的更新相当于出发一次重新的计算 ，获取get就行所以只需要更改dirty就行
+      this.dirty = true;
+    } else {
+      queueWatcher(this);
+    }
+  }
+
+  evaluate() {
+    this.value = this.get();
+    this.dirty = false;
+  }
+  // 相互收集watcher
+  depend() {
+    // 收集watcher 存放到dep中
+
+    let i = this.deps.length;
+    while (i--) {
+      this.deps[i].depend()
+    }
   }
   run() {
     // 数据改变才会执行run

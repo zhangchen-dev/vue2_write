@@ -1,3 +1,4 @@
+import Dep from "./observer/dep.js";
 import { observer } from "./observer/index.js";
 import Watcher from "./observer/watcher.js";
 import { nextTick } from "./utils/nextTick.js";
@@ -15,9 +16,9 @@ export function initState(vm) {
   if (opts.watch) {
     initWatch(vm);
   }
-  // if (opts.computed) {
-  //   initComputed();
-  // }
+  if (opts.computed) {
+    initComputed(vm);
+  }
   // if (opts.methods) {
   //   initMethods();
   // }
@@ -61,6 +62,68 @@ function initWatch(vm) {
       createWatcher(vm, key, handler);
     }
   }
+}
+
+// 初始化computed
+function initComputed(vm) {
+  let computed = vm.$options.computed;
+
+  //  将computed属性通过difineProperty 进行处理
+  // 存在多个需要进行遍历
+  for (let key in computed) {
+    // 两种方式使用computed 方法 / 对象
+    let userDef = computed[key];
+    // 是方法直接获取方法 是对象获取对象中定义的get
+    let getter = typeof userDef === "function" ? userDef : userDef.get;
+    // 使用watcher实现dirty (缓存机制)
+    let watcher = (vm._computedWatchers = {});
+    // 给计算属性中的每个属性添加一个watcher
+    watcher[key] = new Watcher(vm, getter, () => {}, { lazy: true }); // 计算属性中的watcher  lazy不触发方法
+    defineComputed(vm, key, userDef);
+  }
+}
+
+// computed的劫持实现
+let sharePropDefinition = {};
+function defineComputed(target, key, userDef) {
+  sharePropDefinition = {
+    enumerable: true,
+    configable: true,
+  };
+  if (typeof userDef === "function") {
+    // sharePropDefinition.get = userDef; // 缓存机制的实现  高阶函数（函数的参数或者返回值是一个函数）
+    sharePropDefinition.get = createComputedGetter(key);
+  } else {
+    // sharePropDefinition.get = userDef.get;
+    sharePropDefinition.get = createComputedGetter(key);
+  }
+  // 添加set 和get属性到computed中
+  Object.defineProperty(target, key, sharePropDefinition);
+}
+
+// 高阶函数
+function createComputedGetter(key) {
+  // 返回用户的方法
+  return function () {
+    // dirty 标记
+    // if (dirty) {
+    //   // 在watcher中
+    //   // 执行缓存
+    // }
+    let watcher = this._computedWatchers[key];
+    if (watcher) {
+      if (watcher.dirty) {
+        watcher.evaluate(); // 这个方法就是执行用户的方法
+      }
+      // 判断是否存在渲染watcher 有的话需要执行 相互存放watcher
+      if (Dep.target) {
+        // 收集渲染watcher
+        watcher.depend(); // watcher
+      }
+      // 重复使用 不用执行直接返回
+      return watcher.value;
+    }
+  };
 }
 
 export function stateMixin(vm) {

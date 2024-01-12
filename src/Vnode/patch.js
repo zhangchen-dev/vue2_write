@@ -1,4 +1,5 @@
 export function patch(oldVnode, Vnode) {
+  console.log('%c 🌷🌷🌷🌷[ oldVnode, Vnode ]-2', 'font-size:13px; background:#57e54a; color:#9bff8e;', oldVnode, Vnode)
   // 将vnode 变成真实的dom
   // 第一次渲染的oldVnode是一个真实Dom
   if (oldVnode.nodeType === 1) {
@@ -8,6 +9,7 @@ export function patch(oldVnode, Vnode) {
     let el = createEl(Vnode);
     //2. 替换  获取父节点=》插入=》老元素删除
     let parentEl = oldVnode.parentNode; // body
+    console.log('%c 🌷🌷🌷🌷[ parentEl ]-12', 'font-size:13px; background:#3145fc; color:#7589ff;', parentEl)
     parentEl.insertBefore(el, oldVnode.nextsibling);
     parentEl.removeChild(oldVnode);
     return el;
