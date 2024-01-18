@@ -113,7 +113,7 @@ function createComputedGetter(key) {
     // }
     let watcher = this._computedWatchers[key];
     if (watcher) {
-      if (watcher.dirty) {
+      if (watcher.dirty) { // 是否是懒加载 是的话直接返回值 否则执行
         watcher.evaluate(); // 这个方法就是执行用户的方法
       }
       // 判断是否存在渲染watcher 有的话需要执行 相互存放watcher
