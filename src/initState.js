@@ -76,9 +76,10 @@ function initComputed(vm) {
     // 是方法直接获取方法 是对象获取对象中定义的get
     let getter = typeof userDef === "function" ? userDef : userDef.get;
     // 使用watcher实现dirty (缓存机制)
-    let watcher = (vm._computedWatchers = {});
+    let watcher = (vm._computedWatchers = {}); 
     // 给计算属性中的每个属性添加一个watcher
     watcher[key] = new Watcher(vm, getter, () => {}, { lazy: true }); // 计算属性中的watcher  lazy不触发方法
+
     defineComputed(vm, key, userDef);
   }
 }

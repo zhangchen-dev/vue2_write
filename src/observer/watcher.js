@@ -53,7 +53,7 @@ export default class Watcher {
     // console.log("updata"); // 执行次数和set触发次数一致
     // this.getter();
 
-    // 注意点： 计算属性中的值不需要重新出发渲染 所以此处需要加以判断
+    // 注意点： 计算属性中的值不需要重新触发渲染 所以此处需要加以判断
     if (this.lazy) {
       // 计算属性的处理 这里的更新相当于出发一次重新的计算 ，获取get就行所以只需要更改dirty就行
       this.dirty = true;
