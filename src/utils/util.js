@@ -45,7 +45,7 @@ export function mergeOptions(parent, child) {
       options[key] = starts[key](parent[key], child[key]);
       return options;
     }else{
-        options[key] = child[key]
+        options[key] = child[key] || parent[key]
     }
   }
 }
