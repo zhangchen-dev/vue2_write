@@ -2,7 +2,7 @@ export function patch(oldVnode, Vnode) {
   // 将vnode 变成真实的dom
 
   if (!oldVnode) {
-    Vnode && createEl(Vnode);
+    return createEl(Vnode);
   }
   // 第一次渲染的oldVnode是一个真实Dom
   if (oldVnode.nodeType === 1) {
@@ -58,7 +58,7 @@ export function patch(oldVnode, Vnode) {
 }
 // 创建真实dom的函数
 export function createEl(Vnode) {
-  const { tag, data, key, children, text } = Vnode || {};
+  const { tag, data, key, children, text } = Vnode;
   if (typeof tag === "string") {
     // 是元素的情况下
     // 此处加以区分组件的情况下
@@ -66,11 +66,13 @@ export function createEl(Vnode) {
       return Vnode.componentInstance.$el;
     } else {
       Vnode.el = document.createElement(tag); // 创建元素
+      console.log("%c 🌷🌷🌷🌷[ node.el ]-71", "font-size:13px; background:#2ecd15; color:#72ff59;", Vnode.el);
       updateProps(Vnode);
       // children的处理
       if (children && children.length) {
         children.forEach((child) => {
           // 递归创建
+          console.log("%c 🌷🌷🌷🌷[ Vnode.el ]-77", "font-size:13px; background:#4089ea; color:#84cdff;", Vnode.el, child, createEl(child));
           child && Vnode.el.appendChild(createEl(child));
         });
       }

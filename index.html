@@ -7,8 +7,6 @@
   </head>
   <body>
     <div id="app" style="font-size: 20px">
-      <h2>你好</h2>
-      <h3>{{name}}</h3>
       <my-button></my-button>
     </div>
     <script src="dist/Vue.js"></script>
@@ -21,7 +19,7 @@
       // 4 父子组件的关系 子组件需要继承父组件中的属性options 也就是类的继承
       // 5. 创建一个子组件 就是new 子类
       Vue.component("my-button", {
-        template: `<button>我全局的按钮</button></button>`,
+        template: `<button>我全局的按钮</button>`,
       });
 
       // 响应式 vue

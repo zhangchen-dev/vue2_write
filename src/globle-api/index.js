@@ -23,12 +23,10 @@ export function initGlobleApi(Vue) {
   Vue.extend = function(options){
     // console.log( options,this.options) // this.options中含有局部的定义组件
     const _super = this
-    console.log('%c 🌷🌷🌷🌷[ this ]-26', 'font-size:13px; background:#4a5faa; color:#8ea3ee;', this)
     // 子组件的实例
     const Sub = function vuecomponent(opts){
       // 注意new Sub（）.mount()
       // 初始化
-      console.log('%c 🌷🌷🌷🌷[ this ]-31', 'font-size:13px; background:#25c73f; color:#69ff83;', this,_super)
       this._init(opts)
     }
     // 子组件需要继承父组件中的属性  实现：Vue  类的继承

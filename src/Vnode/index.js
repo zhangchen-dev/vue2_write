@@ -30,7 +30,7 @@ function createElement(vm, tag, data = {}, ...children) {
     return vnode(vm, tag, data, data.key, children);
   } else {
     // 是组件
-    const Ctor = vm.$options["components"][tag] || ""; // 获取到自己的组件
+    const Ctor = vm.$options["components"][tag]; // 获取到自己的组件
     return Createcomponent(vm, tag, data, children, Ctor);
   }
 }
@@ -39,10 +39,11 @@ function isReservd(tag) {
   return ["a", "div", "h2", "h3", "span", "input"].includes(tag);
 }
 
-// 创建组件
+// 创建组件成虚拟节点
 function Createcomponent(vm, tag, data, children, Ctor) {
   if (typeof Ctor === "object") {
     Ctor = vm.constructor.extend(Ctor);
+    console.log('%c 🌷🌷🌷🌷[ Ctor ]-46', 'font-size:13px; background:#5d1a0d; color:#a15e51;', Ctor)
   }
   // 添加一个方法 hooks
   data.hooks = {
@@ -50,12 +51,11 @@ function Createcomponent(vm, tag, data, children, Ctor) {
       // 组件的初始化
       // 初始化子组件 创建实例
       let child = (vnode.componentInstance = new vnode.componentOptions.Ctor({}));
-      console.log('%c 🌷🌷🌷🌷[ Vnode.componentOptions?.Ctor ]-53', 'font-size:13px; background:#5b2cb1; color:#9f70f5;', vnode.componentOptions.Ctor)
-      console.log('%c 🌷🌷🌷🌷[ child ]-53', 'font-size:13px; background:#d706e2; color:#ff4aff;', child)
       child.$mount();
     },
   };
-  return vnode("vm", "vue-component" + "-" + tag, data, undefined, undefined, undefined, { Ctor, children });
+  const aa =  vnode("vm", "vue-component" + "-" + tag, data, undefined, undefined, undefined, { Ctor, children });
+  return aa
 }
 
 // 创建文本
